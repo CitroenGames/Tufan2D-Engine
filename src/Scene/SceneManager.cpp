@@ -5,13 +5,6 @@ Scene* SceneManager::m_QueuedScene = nullptr;
 
 void SceneManager::Update(double deltaTime)
 {
-	// Switch scene if a new one is queued
-	if (m_QueuedScene)
-	{
-		SwitchSceneNow(m_QueuedScene);
-		m_QueuedScene = nullptr;
-	}
-
 	if (m_ActiveScene)
 	{
 		m_ActiveScene->Update(deltaTime);
@@ -36,21 +29,33 @@ void SceneManager::Render()
 
 void SceneManager::QueueSwitchScene(Scene* scene)
 {
-	m_QueuedScene = scene;
+	if (scene)
+	{
+		m_QueuedScene = scene;
+	}
 }
 
-void SceneManager::SwitchSceneNow(Scene* scene)
+void SceneManager::SwitchSceneNow()
 {
 	if (m_ActiveScene)
 	{
 		m_ActiveScene->Destroy();
 		delete m_ActiveScene;
 	}
-	m_ActiveScene = scene;
+
+	if (!m_QueuedScene)
+	{
+		return;
+	}
+
+	m_ActiveScene = m_QueuedScene;
 	if (m_ActiveScene)
 	{
 		m_ActiveScene->Init();
 	}
+
+	delete m_QueuedScene;
+	m_QueuedScene = nullptr;
 }
 
 Scene* SceneManager::GetActiveScene()

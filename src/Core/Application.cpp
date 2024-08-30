@@ -6,7 +6,7 @@
 #include <thread>
 #include "imgui/imgui-SFML.h"
 
-sf::RenderWindow* Application::m_Window = nullptr;
+std::shared_ptr<sf::RenderWindow> Application::m_Window = nullptr;
 
 const int TICKRATE = 66;  // Desired tickrate (ticks per second)
 const double FRAME_TIME = 1.0 / TICKRATE;  // Time per tick (seconds)
@@ -48,15 +48,18 @@ void Application::Run()
 
             ImGui::SFML::Update(*m_Window, deltaClock.restart());
 
+            if (SceneManager::m_QueuedScene)
+            {
+                SceneManager::SwitchSceneNow();
+            }
+
             // Fixed Update
             while (accumulator >= FRAME_TIME) {
                 SceneManager::FixedUpdate();
                 accumulator -= FRAME_TIME;
             }
 
-            // Update
-            double deltaTime = elapsedTime.count();
-            SceneManager::Update(deltaTime);
+            SceneManager::Update(elapsedTime.count());
 
             // Render
             m_Window->clear();

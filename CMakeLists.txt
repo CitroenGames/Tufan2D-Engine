@@ -4,19 +4,20 @@ project(Engine)
 
 set(CMAKE_CXX_STANDARD 20)
 
+include(cmake/group_sources.cmake)
 add_subdirectory(deps)
 
-file(GLOB_RECURSE ENGINE_SOURCES CONFIGURE_DEPENDS
+file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS
     "src/*.h"
     "src/*.cpp"
 )
 
 if(MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
-    group_sources(ENGINE_SOURCES)
+    group_sources(SOURCE_FILES)
 endif()
 
-add_library(${PROJECT_NAME} STATIC ${ENGINE_SOURCES})
+add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
 
 target_include_directories(${PROJECT_NAME} PUBLIC src)
 

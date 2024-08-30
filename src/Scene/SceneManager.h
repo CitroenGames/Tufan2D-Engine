@@ -4,16 +4,17 @@
 
 class SceneManager
 {
+	friend class Application;
 public:
 	static void Update(double deltaTime);
 	static void FixedUpdate();
 	static void Render();
-	static void SwitchSceneNow(Scene* scene);
 	static void QueueSwitchScene(Scene* scene);
 	static Scene* GetActiveScene();
 	static void Destroy();
 
 private:
+	static void SwitchSceneNow();
 	static Scene* m_ActiveScene;
 	static Scene* m_QueuedScene;
 };
